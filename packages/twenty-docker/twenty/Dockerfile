@@ -67,6 +67,12 @@ COPY ./packages/twenty-ui /app/packages/twenty-ui
 COPY ./packages/twenty-shared /app/packages/twenty-shared
 COPY ./packages/twenty-sdk /app/packages/twenty-sdk
 COPY ./packages/twenty-client-sdk /app/packages/twenty-client-sdk
+
+# Regenerate theme constants from packages/twenty-ui/design-tokens before building.
+# generateTokens is a standalone nx target and is deliberately NOT wired into
+# `build`, so without this step the committed constants win and any design-token
+# change compiles to nothing.
+RUN npx nx run twenty-ui:generateTokens
 RUN npx nx run twenty-front:lingui:extract && \
     npx nx run twenty-front:lingui:compile
 # To skip the memory-intensive frontend build, pre-build on the host:
